@@ -24,14 +24,8 @@ beneficiaries_cleaned <-
 mortality_cleaned <- 
   mortality_data %>% select(ln_deaths2, year)
 
-pipe_cleaned <- 
-  pipe_data %>% 
-  filter(rur < 1 & year_reg == 1990 & treated2 == 2) %>% 
-  select(pipe_shr6090, ln_pipe)
-
-
 
 #### Save data ####
-write_csv(beneficiaries_cleaned, "data/raw_data/beneficiaries_cleaned.csv")
-write_csv(mortality_cleaned, "data/raw_data/mortality_cleaned.csv")
-write_csv(pipe_cleaned, "data/raw_data/pipe_cleaned.csv")
+write_csv(beneficiaries_cleaned, "data/analysis_data/beneficiaries_cleaned.csv")
+write_csv(mortality_cleaned, "data/analysis_data/mortality_cleaned.csv")
+write_csv(pipe_data, "data/analysis_data/pipe_cleaned.csv")
