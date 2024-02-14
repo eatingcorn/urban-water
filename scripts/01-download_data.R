@@ -9,18 +9,18 @@
 
 
 #### Workspace setup ####
-library(opendatatoronto)
 library(tidyverse)
-# [...UPDATE THIS...]
+library(haven)
 
 #### Download data ####
-# [...ADD CODE HERE TO DOWNLOAD...]
 
+beneficiaries_data <- read_dta("data/raw_data/PAL_pop_loc_covg.dta")
+mortality_data <- read_dta("data/raw_data/analysisfile_7997.dta")
+pipe_data <- read_dta("data/raw_data/analysisfile_8595.dta")
 
 
 #### Save data ####
-# [...UPDATE THIS...]
-# change the_raw_data to whatever name you assigned when you downloaded it.
-write_csv(the_raw_data, "inputs/data/raw_data.csv") 
 
-         
+write_csv(beneficiaries_data, "data/raw_data/beneficiaries_raw.csv") 
+write_csv(mortality_data, "data/raw_data/mortality_raw.csv") 
+write_csv(pipe_data, "data/raw_data/pipe_data_raw.csv") 

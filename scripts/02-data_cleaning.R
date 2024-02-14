@@ -11,34 +11,27 @@
 library(tidyverse)
 
 #### Clean data ####
-raw_data <- read_csv("inputs/data/plane_data.csv")
+beneficiaries_data <- read_csv("data/raw_data/beneficiaries_raw.csv")
+mortality_data <- read_csv("data/raw_data/mortality_raw.csv")
+pipe_data <- read_csv("data/raw_data/pipe_data_raw.csv")
 
-cleaned_data <-
-  raw_data |>
-  janitor::clean_names() |>
-  select(wing_width_mm, wing_length_mm, flying_time_sec_first_timer) |>
-  filter(wing_width_mm != "caw") |>
-  mutate(
-    flying_time_sec_first_timer = if_else(flying_time_sec_first_timer == "1,35",
-                                   "1.35",
-                                   flying_time_sec_first_timer)
-  ) |>
-  mutate(wing_width_mm = if_else(wing_width_mm == "490",
-                                 "49",
-                                 wing_width_mm)) |>
-  mutate(wing_width_mm = if_else(wing_width_mm == "6",
-                                 "60",
-                                 wing_width_mm)) |>
-  mutate(
-    wing_width_mm = as.numeric(wing_width_mm),
-    wing_length_mm = as.numeric(wing_length_mm),
-    flying_time_sec_first_timer = as.numeric(flying_time_sec_first_timer)
-  ) |>
-  rename(flying_time = flying_time_sec_first_timer,
-         width = wing_width_mm,
-         length = wing_length_mm
-         ) |> 
-  tidyr::drop_na()
+
+beneficiaries_cleaned <- 
+  beneficiaries_data %>% mutate(year = year + (month - 1) / 12) %>% 
+  rename(beneficiaries = benef) %>% select(year, beneficiaries)
+
+
+mortality_cleaned <- 
+  mortality_data %>% select(ln_deaths2, year)
+
+pipe_cleaned <- 
+  pipe_data %>% 
+  filter(rur < 1 & year_reg == 1990 & treated2 == 2) %>% 
+  select(pipe_shr6090, ln_pipe)
+
+
 
 #### Save data ####
-write_csv(cleaned_data, "outputs/data/analysis_data.csv")
+write_csv(beneficiaries_cleaned, "data/raw_data/beneficiaries_cleaned.csv")
+write_csv(mortality_cleaned, "data/raw_data/mortality_cleaned.csv")
+write_csv(pipe_cleaned, "data/raw_data/pipe_cleaned.csv")
