@@ -1,17 +1,17 @@
 #### Preamble ####
-# Purpose: Replicated graphs from... [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 11 February 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
-# License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Purpose: Replicated graphs from
+# # "Urban Water Disinfection and Mortality Decline in Lower-Income Countries" (Bhalotra et al. 2021)
+# Author: Ricky Fung
+# Date: 15 February 2024
+# Contact: ricky.fung@mail.utoronto.ca
+# Pre-requisites: Install dplyr, tidyverse package, and ggpubr.
+# Run scripts "01-download_data.R" and "02-data_cleaning.R".
 
 
 #### Workspace setup ####
 library(tidyverse)
 library(dplyr)
-# [...UPDATE THIS...]
+library(ggpubr)
 
 #### Load data ####
 beneficiaries_data <- read_csv("data/analysis_data/beneficiaries_cleaned.csv")
@@ -23,7 +23,7 @@ pipe_data <- read_csv("data/analysis_data/pipe_cleaned.csv")
 
 # Plotting
 figure_2 <- beneficiaries_data %>%
-  ggplot(aes(x = t, y = benef)) +
+  ggplot(aes(x = year, y = beneficiaries)) +
   geom_line() +
   theme_minimal() +
   labs(x = "Year", y = "Beneficiaries (Millions)") +
@@ -31,6 +31,7 @@ figure_2 <- beneficiaries_data %>%
   scale_y_continuous(labels = scales::comma) +
   theme(axis.text = element_text(size = 8))
 
+figure_2
 
 # Replication of Figure 3
 
@@ -58,6 +59,7 @@ figure_3 <- mortality_data %>%
   geom_vline(xintercept = 1991, linetype = "dashed", color = "darkgray") +
   theme(legend.position = "none")
 
+figure_3
 
 # Replication of Figure 4
 
@@ -142,6 +144,8 @@ plot_data3 <- collapsed_data %>%
         legend.title = element_blank(),
         legend.text = element_text(size = 15))
 
+ggarrange(plot_data1, plot_data2, plot_data3, heights = c(1, 1), labels = c('a', 'b', 'c'))
+
 # Replication of Figure 7
 
 # Scatter plot with linear fit
@@ -155,3 +159,5 @@ figure_7 <- ggplot(pipe_filtered, aes(x = pipe_shr6090, y = ln_pipe)) +
   labs(x = "Piped Water Share 1960/1990", y = "Ln(Pipe Breaks/Km)") +
   theme(axis.text = element_text(size = 8), axis.title = element_text(size = 10)) +
   theme_minimal()
+
+figure_7

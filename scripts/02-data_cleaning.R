@@ -1,11 +1,11 @@
 #### Preamble ####
-# Purpose: Cleans the raw plane data recorded by two observers..... [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 6 April 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
-# License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Purpose: Cleans data from
+# "Urban Water Disinfection and Mortality Decline in Lower-Income Countries" (Bhalotra et al. 2021)
+# Author: Ricky Fung
+# Date: 15 February 2024
+# Contact: ricky.fung@mail.utoronto.ca
+# Pre-requisites: Run script "01-download_data.R"
+
 
 #### Workspace setup ####
 library(tidyverse)
