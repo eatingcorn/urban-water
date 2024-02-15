@@ -1,13 +1,10 @@
 ---
-title: "My title"
-subtitle: "My subtitle if needed"
-author: 
-  - First author
-  - Another author
-thanks: "Code and data are available at: LINK."
+title: "Analyzing the Impact of Mexico's Clean Water Program, Programa Agua Limpia, on Child Mortality Rates"
+author: Ricky Fung
+thanks: "Code and data are available at: https://github.com/eatingcorn/urban-water"
 date: today
 date-format: long
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+abstract: "This paper analyzes the impact of the clean water program, Programa Agua Limpia, on child mortality rates. It was illustrated that significant decreases in child mortality rates of diarrheal after the introduction of the clean water program. It also illustrated a significant decrease in child mortality within small-medium-sized cities. This demonstrates the importance of improving the water quality in low- and middle-income countries to prevent more child deaths caused by diarrhea."
 format: pdf
 number-sections: true
 bibliography: references.bib
@@ -19,198 +16,220 @@ bibliography: references.bib
 #| message: false
 
 library(tidyverse)
-library(palmerpenguins)
+library(here)
+library(dplyr)
+library(ggpubr)
+
+
+
+beneficiaries_data <- read_csv(here::here("data/analysis_data/beneficiaries_cleaned.csv"))
+mortality_data <- read_csv(here::here("data/analysis_data/mortality_cleaned.csv"))
+pipe_data <- read_csv(here::here("data/analysis_data/pipe_cleaned.csv"))
 ```
 
 
 # Introduction
 
-You can and should cross-reference sections and sub-sections. We use @citeR and @rohan.
+Historically, improvements in the quality of municipal drinking water made important contributions to population health in today’s countries [@citeWater]. The late nineteenth and early twentieth centuries witnessed significant advancements in water purification technologies, leading to remarkable reductions in urban mortality across countries such as Japan, France, Sweden, the United States, and the United Kingdom [@citeWater]. Despite these advancements, diarrhea remains a leading cause of child mortality and morbidity, being the fifth leading cause of death in children
+younger than 5 years old [@citeCDC]. 
 
-The remainder of this paper is structured as follows. @sec-data....
+This paper analyses the impact of Mexico’s clean water program, Programa Agua Limpia, on child mortality rates by assessing mortality trends and service coverage. The paper uses replicated data from "Urban Water Disinfection and Mortality Decline in Lower-Income Countries" [@citeWater] for the analysis.
 
+In 1991, the program, Programa Agua Limpia was involved in disinfecting Mexico's water supply by chlorinating it in response to a cholera epidemic. Although the main purpose of this program was to prevent the spread of cholera, in @sec-result it was found that the diarrheal mortality of children under 5 years old with diarrheal infections decreased significantly after 1991. It was also discovered that there was a significant decline in the mortality rate of children with diarrheal infections and all causes, including diarrheal infectious, non-infectious, and respiratory infectious, particularly in small to medium-sized cities. These results demonstrate the importance of improving the water quality in low- and middle-income countries to prevent more child deaths caused by diarrhea.
 
 
 # Data {#sec-data}
 
-Some of our data is of penguins (@fig-bills), from @palmerpenguins.
+## Data Source and Methodology
+The paper used for replication is "Urban Water Disinfection and Mortality Decline in Lower-Income Countries" [@citeWater]. This paper assesses the effectiveness of water disinfection programs in lower-income countries, focusing on the case of Mexico. It examines The History of Programa Agua Limpia in Mexico, Water Disinfection and Diarrheal Disease Mortality Rates, the circumstances where municipal water disinfection is effective, and its cost-effectiveness. The reproduction in this report focuses on the water disinfection and diarrheal disease mortality rates, more specifically the impact of Programa Agua Limpia, on Child Mortality Rates.
+
+The data on Under-5 Mortality Diarrheal Deaths and Under-5 Mortality Rates by Treated and Control Locations or Conditions were constructed from individual-level death certificate data for the period 1979-1997. Individual-level death certificates were publicly available from the Instituto Nacional de Estadistica y Geografia [@citeInst]. The data on Chlorination Coverage under Programa Agua Limpia are obtained from the National Water Commission [@citeCon] which is responsible for hydrology monitoring and the construction of Mexico's water conservation facilities.
+
+Using the R programming language [@citeR] and packages, and tidyverse [@citeTidy] were used to simulate and test the data set and generate tests. The ggpubr [@citeGg], tidyverse [@citeTidy], dplyr [@citeDplyr], here [@citeHere], and haven [@citeHaven] packages were then used to load, read and write dta files, as well as clean data, test for it, and display the figures. 
+
+
+## Attributes
+The Under-5 Mortality Diarrheal Deaths data includes the year of death and mortality patterns among children under 5 years old, covering the causes: of non-respiratory, respiratory, and diarrheal illnesses. It also includes annual death counts, and mortality rates per 1,000 live births for each cause. 
+
+The Under-5 Mortality Rates by Treated and Control Locations or Conditions data includes 68 different attributes ranging from the sum of mortalities and the rates of 1-month newborns, 12 months, 4 years, and under 5 years, it also includes treated vs. controlled diseases and living situations. For example, household income, whether individuals lived in small/medium/large cities, etc.
+
+For the Chlorination Coverage under Programa Agua Limpia data, the attributes are month, year, benef, and localities_cv. The month and year represent the date on which the chlorination coverage data was recorded or measured, Benef represents the number of individuals, households, or communities who benefited from chlorination services during the specified month and year, and localities_cv refer to the localities or geographic areas where chlorination services were provided.
+
+# Results {#sec-results}
+
 
 ```{r}
-#| label: fig-bills
-#| fig-cap: Bills of penguins
 #| echo: false
+#| warning: false
+#| label: fig-1
+#| fig-cap: "Chlorination Coverage under Programa Agua Limpia"
 
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = "none") +
+figure_1 <- beneficiaries_data %>%
+  ggplot(aes(x = year, y = beneficiaries)) +
+  geom_line() +
   theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
+  labs(x = "Year", y = "Beneficiaries (Millions)") +
+  scale_x_continuous(breaks = seq(1991, 1995, 1)) +
+  scale_y_continuous(labels = scales::comma) +
+  theme(axis.text = element_text(size = 8))
+
+figure_1
 ```
+@fig-1 illustrates the  the number of beneficiaries (in millions) covered by chlorination services between April 1991 and December 1995. The sharp uptick in coverage between April 1991 and December 1991 was coincident with the introduction of Programa Agua Limpia (PAL). The efforts correspond to an increase in the proportion of the urban population receiving disinfected water.
 
-Talk more about it.
-
-And also planes (@fig-planes). (You can change the height and width, but don't worry about doing that until you have finished every other aspect of the paper - Quarto will try to make it look nice and the defaults usually work well once you have enough text.)
+\newpage
 
 ```{r}
-#| label: fig-planes
-#| fig-cap: Relationship between wing length and width
 #| echo: false
 #| warning: false
-#| message: false
+#| label: fig-2
+#| fig-cap: "National Trends in Under-5 Mortality Diarrheal Deaths, 1979–1997"
 
-analysis_data <- read_csv(here::here("data/analysis_data/analysis_data.csv"))
+# Filtering
+regression_data <- mortality_data %>%
+  filter(year >= 1971 & year <= 1985)
 
-analysis_data |> 
-  ggplot(aes(x = width, y = length)) +
-  geom_point(alpha = 0.8) +
+# Fit regression model
+regression_model <- lm(ln_deaths2 ~ year, data = regression_data)
+
+# Create predictions
+predictions <- data.frame(year = seq(min(mortality_data$year), max(mortality_data$year), by = 1))
+predictions$temp <- predict(regression_model, newdata = predictions)
+
+# Plot
+figure_3 <- mortality_data %>%
+  ggplot(aes(x = year)) +
+  geom_point(aes(y = ln_deaths2), color = "black") +
+  geom_line(data = predictions, aes(y = temp), color = "gray80") +
+  geom_line(aes(y = ln_deaths2), color = "black") +
   theme_minimal() +
-  labs(x = "Wing width (mm)",
-       y = "Wing length (mm)")
+  scale_x_continuous(breaks = seq(1979, 1997, by = 2)) +
+  xlab("Year") +
+  ylab("Ln(Under 5 Diarrheal Mortality)") +
+  geom_vline(xintercept = 1991, linetype = "dashed", color = "darkgray") +
+  theme(legend.position = "none")
+
+# Display
+figure_3
+
 ```
+@fig-2 illustrates the average trends in mortality rates for diarrheal diseases for nonrural municipalities between 1979–1997. Visually, we note a trend break in the diarrheal mortality series in 1991, coincident with the start of PAL. The gray line is the linear prediction of the pre-PAL trend between 1979 and 1984—notably, actual diarrheal mortality followed this prediction until 1991, when PAL was implemented
 
-Talk way more about it. 
+\newpage
 
-
-
-# Model
-
-The goal of our modelling strategy is twofold. Firstly,...
-
-Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-model-details].
-
-## Model set-up
-
-Define $y_i$ as the number of seconds that the plane remained aloft. Then $\beta_i$ is the wing width and $\gamma_i$ is the wing length, both measured in millimeters.  
-
-\begin{align} 
-y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
-\mu_i &= \alpha + \beta_i + \gamma_i\\
-\alpha &\sim \mbox{Normal}(0, 2.5) \\
-\beta &\sim \mbox{Normal}(0, 2.5) \\
-\gamma &\sim \mbox{Normal}(0, 2.5) \\
-\sigma &\sim \mbox{Exponential}(1)
-\end{align}
-
-We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
-
-
-### Model justification
-
-We expect a positive relationship between the size of the wings and time spent aloft. In particular...
-
-We can use maths by including latex between dollar signs, for instance $\theta$.
-
-
-# Results
-
-Our results are summarized in @tbl-modelresults.
-
-```{r}
+```{r fig.height=12, fig.width=15}
 #| echo: false
-#| eval: true
 #| warning: false
-#| message: false
+#| label: fig-3
+#| fig-cap: "National Trends in Under-5 Mortality Rates by Treated and Control Locations or Conditions, 1985–1995"
 
-library(rstanarm)
+# Collapse data by specified variables
+plot_12 <- pipe_data %>%
+  group_by(year_reg, small_city, treated2) %>%
+  summarise(deaths_under5 = sum(deaths_under5),
+            livebirths = sum(livebirths),
+            .groups = "drop")
 
-first_model <-
-  readRDS(file = here::here("models/first_model.rds"))
+# Calculate under 5 mortality rate and natural log
+plot_12 <- plot_12 %>%
+  mutate(rate_under5 = (deaths_under5 / livebirths) * 1000,
+         ln_rate_under5 = log(rate_under5))
+
+# Define labels for treated2 and small_city variables
+plot_12$treated2 <- factor(plot_12$treated2, labels = c("Non-Infectious", "Respiratory Infectious", "Diarrheal Infections"))
+plot_12$small_city <- factor(plot_12$small_city, labels = c("Large Cities", "Small/medium-sized cities"))
+
+# Plot the graph
+plot_data1 <- plot_12 %>%
+  filter(small_city == "Small/medium-sized cities") %>%
+  ggplot(aes(x = year_reg, y = ln_rate_under5, color = treated2)) +
+  geom_line() +
+  geom_point() +  
+  scale_x_continuous(breaks = seq(1985, 1995, by = 1)) +
+  labs(x = "Year", y = "Under 5 Mortality (logged)") +
+  scale_color_manual(values = c("gray70", "black", "gray45")) +
+  geom_vline(xintercept = 1991, linetype = "dashed") +
+  theme(axis.text.x = element_text(size = 15),
+        axis.title.y = element_text(size = 15),
+        legend.position = "bottom",
+        legend.title = element_blank(),
+        legend.text = element_text(size = 15)) +
+  guides(color = guide_legend(override.aes = list(size = 2))) 
+
+
+# Plot the graph
+plot_data2 <- plot_12 %>% na.omit() %>% 
+  filter(treated2 == "Diarrheal Infections") %>%
+  ggplot(aes(x = year_reg, y = ln_rate_under5, color = small_city)) +
+  geom_line() +
+  geom_point() +  
+  scale_x_continuous(breaks = seq(1985, 1995, by = 1)) +
+  labs(x = "Year", y = "Under 5 Mortality (logged)") +
+  scale_color_manual(values = c("gray50", "gray20")) +
+  geom_vline(xintercept = 1991, linetype = "dashed") +
+  theme(axis.text.x = element_text(size = 15),
+        axis.title.y = element_text(size = 15),
+        legend.position = "bottom",
+        legend.title = element_blank(),
+        legend.text = element_text(size = 15))
+
+
+# Collapse data by specified variables
+collapsed_data <- pipe_data %>%
+  group_by(year_reg, small_city) %>%
+  summarise(deaths_under5 = sum(deaths_under5),
+            livebirths = sum(livebirths),
+            .groups = "drop") %>% na.omit()
+
+collapsed_data <- collapsed_data %>%
+  mutate(rate_under5 = (deaths_under5 / livebirths) * 1000)
+
+
+# Define labels for small_city variable
+collapsed_data$small_city <- factor(collapsed_data$small_city, labels = c("Large Cities", "Small-Medium Sized Cities"))
+
+# Plot the graph
+plot_data3 <- collapsed_data %>%
+  ggplot(aes(x = year_reg, y = rate_under5, color = small_city)) +
+  geom_line() +
+  geom_point() +
+  scale_x_continuous(breaks = seq(1985, 1995, by = 1)) +
+  labs(x = "Year", y = "Under 5 Mortality") +
+  scale_color_manual(values = c("gray50", "gray20")) + # Adjust the gray levels here
+  geom_vline(xintercept = 1991, linetype = "dashed") +
+  theme(axis.text.x = element_text(size = 15),
+        axis.title.y = element_text(size = 15),
+        legend.position = "bottom",
+        legend.title = element_blank(),
+        legend.text = element_text(size = 15))
+
+# Display
+ggarrange(plot_data1, plot_data2, plot_data3, heights = c(1, 1), labels = c('Panel A', 'Panel B', 'Panel C'))
 ```
 
-```{r}
-#| echo: false
-#| eval: true
-#| label: tbl-modelresults
-#| tbl-cap: "Explanatory models of flight time based on wing width and wing length"
-#| warning: false
-
-modelsummary::modelsummary(
-  list(
-    "First model" = first_model
-  ),
-  statistic = "mad",
-  fmt = 2
-)
-```
-
-
+@fig-3 illustrates the average trends in under-5 mortality rates (per 1,000 live births) for diarrheal diseases against alongside respiratory and noninfectious control diseases in municipalities containing small and medium-sized cities (Panel A), diarrheal diseases in municipalities containing small and medium-sized cities versus large (untreated) cities (Panel B), and all-cause under-5 mortality across municipalities containing small and medium-sized cities versus large cities (Panel C).
 
 
 # Discussion
 
-## First discussion point {#sec-first-point}
 
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
 
-## Second discussion point
+## Quality improving water programs decreases child mortality rates
 
-## Third discussion point
+In @sec-results, the introduction of Programa Agua Limpia in 1991 demonstrated increased chlorination coverage, resulting in improved water quality, and significant decreases in child mortality rates, especially those related to diarrheal diseases. 
+
+In 1991, a cholera epidemic emerged in Chile and Peru and quickly spread through South and Central America (Medina Lois 1991, Ries et al. 1992, Sepúlveda et al. 2006). 1991 was an all time-high for contaminated water diseases due to the spread. With the emergence of the epidemic Programa Agua Limpia was quickly introduced and despite the epidemic significant decreases were still shown in child mortality rates related to diaarheal diseases. After the epidemic the rates remain decreasing showing the effectiveness of water programs.
+
+## Importance of improving water quality in low- and middle-income countries 
+
+In @sec-results, the introduction of Programa Agua Limpia in 1991 demonstrated increased chlorination coverage, resulting in improved water quality, and significant decreases in child mortality rates for all-causes including diarrheal infectious, non-infectious, and respiratory infectious all around the year 1991.
+
+In the early 1990s Mexico was considered a low-income country who face great socio-hydrological risk [@citePenn]. Emergence of clean water program, Programa Agua Limpia drastically decreased Mexico's child mortality rates after 1991, illustrating the impact water programs has on already struggling countries who face socio-hydrological risks.
+
 
 ## Weaknesses and next steps
 
-Weaknesses and next steps should also be included.
-
-\newpage
-
-\appendix
-
-# Appendix {-}
-
-
-# Additional data details
-
-# Model details {#sec-model-details}
-
-## Posterior predictive check
-
-In @fig-ppcheckandposteriorvsprior-1 we implement a posterior predictive check. This shows...
-
-In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. This shows... 
-
-```{r}
-#| eval: true
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-ppcheckandposteriorvsprior
-#| layout-ncol: 2
-#| fig-cap: "Examining how the model fits, and is affected by, the data"
-#| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
-
-pp_check(first_model) +
-  theme_classic() +
-  theme(legend.position = "bottom")
-
-posterior_vs_prior(first_model) +
-  theme_minimal() +
-  scale_color_brewer(palette = "Set1") +
-  theme(legend.position = "bottom") +
-  coord_flip()
-```
-
-## Diagnostics
-
-@fig-stanareyouokay-1 is a trace plot. It shows... This suggests...
-
-@fig-stanareyouokay-2 is a Rhat plot. It shows... This suggests...
-
-```{r}
-#| echo: false
-#| eval: true
-#| message: false
-#| warning: false
-#| label: fig-stanareyouokay
-#| fig-cap: "Checking the convergence of the MCMC algorithm"
-#| fig-subcap: ["Trace plot", "Rhat plot"]
-#| layout-ncol: 2
-
-plot(first_model, "trace")
-
-plot(first_model, "rhat")
-```
-
+This analysis reveals several weaknesses. As stated in @sec-data, this paper only focuses on one low-income country, in this case Mexico. The impact of quality improving water programs may differ between other low-income countries and may illustrate no quality changes. Another weakness, is the limited scope as the analysis did not consider other factors that may influence child mortality rates such as healthcare access, sanitation infrastructure, nutrition, etc. For the future the expansion of the scope beyond a single low-income country as well as including multiple countries with varying levels of development and different socio-hydrological risks to understand findings. Additionally, an analysis of factors that may contribute to the effectiveness of water cleaning programs.
 
 
 \newpage
